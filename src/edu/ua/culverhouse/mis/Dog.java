@@ -10,6 +10,7 @@ public class Dog {
   private String sex;
   private int age;
   private float weight;
+  private String imgPath;
   private boolean rented;
   private boolean deleted;
 
@@ -18,13 +19,14 @@ public class Dog {
   public Dog() {
   }
 
-  public Dog(int id, String name, String breed, String sex, int age, float weight) {
+  public Dog(int id, String name, String breed, String sex, int age, float weight, String imgPath) {
     this.id = id;
     this.name = name;
     this.breed = breed;
     this.sex = sex;
     this.age = age;
     this.weight = weight;
+    this.imgPath = imgPath;
     rented = false;
     deleted = false;
   }
@@ -93,6 +95,10 @@ public class Dog {
     this.deleted = !this.deleted;
   }
 
+  public String getImgPath() { return this.imgPath; }
+
+  public void setImgPath(String imgPath) { this.imgPath = imgPath; }
+
   public static int getCount() {
     return count;
   }
@@ -116,12 +122,12 @@ public class Dog {
 
   public String toFile() {
     return getId() + "#" + getName() + "#" + getBreed() + "#" + getSex() + "#" + getAge() + "#" +
-        getWeight() + "#" + isRented() + "#" + isDeleted();
+        getWeight() + "#" + getImgPath() + "#" + isRented() + "#" + isDeleted();
   }
 
   public static Dog addDog(Dog[] myDogs, String name, String breed, String sex,
-      int age, float weight) throws IOException {
-    Dog tempDog = new Dog(Dog.getCount() + 1, name, breed, sex, age, weight);
+      int age, float weight, String imgPath) throws IOException {
+    Dog tempDog = new Dog(Dog.getCount() + 1, name, breed, sex, age, weight, imgPath);
     myDogs[Dog.getCount()] = tempDog;
     Dog.incCount();
     DogFile.writeAllDogs(myDogs);
@@ -129,7 +135,7 @@ public class Dog {
   }
 
   public static Dog editDog(Dog[] myDogs, int id, String name, String breed, String sex,
-      int age, float weight) throws IOException {
+      int age, float weight, String imgPath) throws IOException {
 
     int foundIndex = -1;
     for (int i = 0; i < Dog.getCount(); ++i) {
@@ -144,6 +150,7 @@ public class Dog {
     myDogs[foundIndex].setSex(sex);
     myDogs[foundIndex].setAge(age);
     myDogs[foundIndex].setWeight(weight);
+    myDogs[foundIndex].setImgPath(imgPath);
     Dog tempDog = myDogs[foundIndex];
     DogFile.writeAllDogs(myDogs);
     return tempDog;

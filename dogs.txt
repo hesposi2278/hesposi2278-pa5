@@ -1,5 +1,5 @@
-1#Autumn#Bernese Mountain Dog#M#10#100.0#false#false
-2#Vegas#Golden Retriever#F#14#110.0#false#false
-3#Tahoe#Golden Retriever#F#3#55.0#false#true
-4#Hunter#St Bernard#M#3#100.0#false#false
-5#Rocco#Mastiff#M#4#120.0#false#false
+1#Autumn#Bernese Mountain Dog#F#10#100.0#https://i.imgur.com/sQ5ss.jpg?1#false#false
+2#Vegas#Golden Retriever#F#14#110.0#https://i.imgur.com/Eh67CRj.jpg#false#false
+3#Tahoe#Golden Retriever#F#3#55.0#https://i.imgur.com/dcYnS4v.jpg#false#true
+4#Hunter#St Bernard#M#3#100.0#https://i.imgur.com/PzxnueL.jpg#false#false
+5#Rocco#Mastiff#M#4#120.0#https://vetstreet-brightspot.s3.amazonaws.com/f1/0ad6d0a10611e087a80050568d634f/file/mastiff-2-645mk062411.jpg#false#false

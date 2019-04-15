@@ -22,7 +22,7 @@ public class CustomerFile {
       } else {
         myCustomers[Customer.getCount()] = new Customer(tempArray[0],
             new Dog(Integer.parseInt(tempArray[1]), tempArray[2], tempArray[3], tempArray[4],
-                Integer.parseInt(tempArray[5]), Float.parseFloat(tempArray[6])));
+                Integer.parseInt(tempArray[5]), Float.parseFloat(tempArray[6]), tempArray[7]));
         myCustomers[Customer.getCount()].getRentedDog().setRented();
         Customer.incCount();
       }

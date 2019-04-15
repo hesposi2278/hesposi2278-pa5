@@ -1,9 +1,16 @@
 package edu.ua.culverhouse.mis;
 
+import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
+
+import javax.imageio.ImageIO;
 import javax.swing.DefaultListModel;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
@@ -29,9 +36,10 @@ public class MainController {
   private JTextField idFld, nameFld, breedFld, ageFld, weightFld, rentedFld;
   private JComboBox<String> sexComboBox;
 
-  private JLabel idLbl, nameLbl, breedLbl, sexLbl, ageLbl, weightLbl, rentedLbl;
+  private JLabel idLbl, nameLbl, breedLbl, sexLbl, ageLbl, weightLbl, rentedLbl, imgLbl;
 
-  // Constructor for home page, calls prepareGUI() which sets layout and functionality of
+  // Constructor for home page, calls prepareGUI() which sets layout and
+  // functionality of
   // the home page
   private MainController() throws IOException {
     prepareGUI();
@@ -48,8 +56,13 @@ public class MainController {
     // Initialize main JFrame
     mainJFrame = new JFrame();
 
-    // Initialize myDogs, myCustomers, and DefaultListModel tempDogs (used to live update dogLst)
+    // Initialize myDogs, myCustomers, and DefaultListModel tempDogs (used to live
+    // update dogLst)
     update();
+
+    imgLbl = new JLabel();
+    imgLbl.setBounds(600, 69, 250, 330);
+    mainJFrame.add(imgLbl);
 
     // Initialize list of dogs on the right side of home page
     dogLst = new JList<>(tempDogs);
@@ -78,6 +91,18 @@ public class MainController {
             ageFld.setText(Integer.toString(tempDogs.get(dogLst.getSelectedIndex()).getAge()));
             weightFld.setText(Float.toString(tempDogs.get(dogLst.getSelectedIndex()).getWeight()));
             rentedFld.setText(Boolean.toString(tempDogs.get(dogLst.getSelectedIndex()).isRented()));
+
+            String path = tempDogs.get(dogLst.getSelectedIndex()).getImgPath();
+            BufferedImage image = null;
+            try {
+            URL url = new URL(path);
+            image = ImageIO.read(url);
+            } catch (IOException a) {
+              a.printStackTrace();
+            }
+            Image dimg = image.getScaledInstance(imgLbl.getWidth(), imgLbl.getHeight(), Image.SCALE_SMOOTH);
+            ImageIcon imageIcon = new ImageIcon(dimg);
+            imgLbl.setIcon(imageIcon);
           }
         }
       }
@@ -105,20 +130,20 @@ public class MainController {
       @Override
       public void actionPerformed(ActionEvent e) {
 
-        // Prevents any rented dogs from being deleted, would probably break program if allowed
+        // Prevents any rented dogs from being deleted, would probably break program if
+        // allowed
         if (!dogLst.isSelectionEmpty()) {
           if (tempDogs.elementAt(dogLst.getSelectedIndex()).isRented()) {
-            JOptionPane.showMessageDialog(mainJFrame,
-                "You cannot delete a dog that is currently rented!",
-                "Error",
+            JOptionPane.showMessageDialog(mainJFrame, "You cannot delete a dog that is currently rented!", "Error",
                 JOptionPane.ERROR_MESSAGE);
           } else {
             String dogName = nameFld.getText();
 
-            // Make user confirm they want to delete selected dog, save button choice in selection
+            // Make user confirm they want to delete selected dog, save button choice in
+            // selection
             int selection = JOptionPane.showConfirmDialog(mainJFrame,
-                ("Are you sure you want you want to delete " + nameFld.getText() + "?"),
-                "Confirm Deletion", JOptionPane.OK_CANCEL_OPTION);
+                ("Are you sure you want you want to delete " + nameFld.getText() + "?"), "Confirm Deletion",
+                JOptionPane.OK_CANCEL_OPTION);
 
             // If the OK button was clicked
             if (selection == JOptionPane.OK_OPTION) {
@@ -131,22 +156,17 @@ public class MainController {
                 // and set list selection to none
                 tempDogs.removeElementAt(dogLst.getSelectedIndex());
                 dogLst.clearSelection();
-                JOptionPane.showMessageDialog(mainJFrame,
-                    (dogName + " was successfully deleted!"),
-                    "Success!", JOptionPane.INFORMATION_MESSAGE);
+                JOptionPane.showMessageDialog(mainJFrame, (dogName + " was successfully deleted!"), "Success!",
+                    JOptionPane.INFORMATION_MESSAGE);
               } catch (IOException a) {
-                JOptionPane.showMessageDialog(mainJFrame,
-                    "Somethings broken",
-                    "IOException",
+                JOptionPane.showMessageDialog(mainJFrame, "Somethings broken", "IOException",
                     JOptionPane.ERROR_MESSAGE);
               }
             }
           }
         } else {
           // If no dog is selected from dogLst, show error message
-          JOptionPane.showMessageDialog(mainJFrame,
-              "Please select a dog from the list to delete!",
-              "Error",
+          JOptionPane.showMessageDialog(mainJFrame, "Please select a dog from the list to delete!", "Error",
               JOptionPane.ERROR_MESSAGE);
         }
       }
@@ -165,47 +185,41 @@ public class MainController {
       public void actionPerformed(ActionEvent e) {
         // First make sure that a dog is selected from the list
         if (!dogLst.isSelectionEmpty()) {
-          // Prevents any rented dogs from being edited, would probably break program if allowed
+          // Prevents any rented dogs from being edited, would probably break program if
+          // allowed
           if (tempDogs.elementAt(dogLst.getSelectedIndex()).isRented()) {
-            JOptionPane.showMessageDialog(mainJFrame,
-                "You cannot edit a dog that is currently rented!",
-                "Error",
+            JOptionPane.showMessageDialog(mainJFrame, "You cannot edit a dog that is currently rented!", "Error",
                 JOptionPane.ERROR_MESSAGE);
-            // If dog is not rented, create NewController object and initialize edit JOptionPane
+            // If dog is not rented, create NewController object and initialize edit
+            // JOptionPane
           } else {
             NewController NewController = new NewController();
 
-            // Call createAndDisplayEditGUI, sets layout and functionality of edit JOptionPane
-            // Once done editing, create new Dog object with updated attributes and store it/
+            // Call createAndDisplayEditGUI, sets layout and functionality of edit
+            // JOptionPane
+            // Once done editing, create new Dog object with updated attributes and store
+            // it/
             // in tempDog
-            tempDog = NewController.createAndDisplayEditGUI(idFld.getText(),
-                nameFld.getText(), breedFld.getText(), sexComboBox.getSelectedIndex(),
-                ageFld.getText(), weightFld.getText());
+            tempDog = NewController.createAndDisplayEditGUI(idFld.getText(), nameFld.getText(), breedFld.getText(),
+                sexComboBox.getSelectedIndex(), ageFld.getText(), weightFld.getText(), tempDogs.get(dogLst.getSelectedIndex()).getImgPath());
 
             try {
               // Set dog to be edited in tempDogs list equal to edited dog from NewController
               // and clear list selection so dogList is updated
-              tempDogs.set(dogLst.getSelectedIndex(), Dog.editDog(myDogs, tempDog.getId(),
-                  tempDog.getName(), tempDog.getBreed(), tempDog.getSex(), tempDog.getAge(),
-                  tempDog.getWeight()));
+              tempDogs.set(dogLst.getSelectedIndex(), Dog.editDog(myDogs, tempDog.getId(), tempDog.getName(),
+                  tempDog.getBreed(), tempDog.getSex(), tempDog.getAge(), tempDog.getWeight(), tempDog.getImgPath()));
               dogLst.clearSelection();
-              JOptionPane.showMessageDialog(mainJFrame,
-                  (tempDog.getName() + " was successfully edited!"),
-                  "Success!", JOptionPane.INFORMATION_MESSAGE);
+              JOptionPane.showMessageDialog(mainJFrame, (tempDog.getName() + " was successfully edited!"), "Success!",
+                  JOptionPane.INFORMATION_MESSAGE);
 
             } catch (IOException a) {
-              JOptionPane.showMessageDialog(mainJFrame,
-                  "Somethings Broken",
-                  "Error",
-                  JOptionPane.ERROR_MESSAGE);
+              JOptionPane.showMessageDialog(mainJFrame, "Somethings Broken", "Error", JOptionPane.ERROR_MESSAGE);
             }
           }
 
         } else {
           // If no dog is selected from dogLst, show error message
-          JOptionPane.showMessageDialog(mainJFrame,
-              "Please select a dog from the list to edit!",
-              "Error",
+          JOptionPane.showMessageDialog(mainJFrame, "Please select a dog from the list to edit!", "Error",
               JOptionPane.ERROR_MESSAGE);
         }
       }
@@ -228,23 +242,20 @@ public class MainController {
         tempDog = NewController.createAndDisplayNewGUI();
 
         try {
-          // If new dog was successfully added in createAndDisplayNewGui(), tempDog will not equal
+          // If new dog was successfully added in createAndDisplayNewGui(), tempDog will
+          // not equal
           // null and can now be added to tempDogs list
           if (tempDog != null) {
-            tempDog = Dog.addDog(myDogs, tempDog.getName(), tempDog.getBreed(), tempDog.getSex(),
-                tempDog.getAge(), tempDog.getWeight());
+            tempDog = Dog.addDog(myDogs, tempDog.getName(), tempDog.getBreed(), tempDog.getSex(), tempDog.getAge(),
+                tempDog.getWeight(), tempDog.getImgPath());
             // Add newly created Dog to tempDogs, dogLst automatically updated
             tempDogs.addElement(tempDog);
             dogLst.clearSelection();
-            JOptionPane.showMessageDialog(mainJFrame,
-                (tempDog.getName() + " was successfully added!"),
-                "Success!", JOptionPane.INFORMATION_MESSAGE);
+            JOptionPane.showMessageDialog(mainJFrame, (tempDog.getName() + " was successfully added!"), "Success!",
+                JOptionPane.INFORMATION_MESSAGE);
           }
         } catch (IOException a) {
-          JOptionPane.showMessageDialog(mainJFrame,
-              "Somethings Broken",
-              "Error",
-              JOptionPane.ERROR_MESSAGE);
+          JOptionPane.showMessageDialog(mainJFrame, "Somethings Broken", "Error", JOptionPane.ERROR_MESSAGE);
         }
       }
     });
@@ -265,45 +276,35 @@ public class MainController {
           if (!tempDogs.elementAt(dogLst.getSelectedIndex()).isRented()) {
             // Prompt user for email address with JOptionPane (customer "primary key")
             // and store in string
-            String email = JOptionPane.showInputDialog(mainJFrame,
-                "Please enter your email address", "Rent a dog",
+            String email = JOptionPane.showInputDialog(mainJFrame, "Please enter your email address", "Rent a dog",
                 JOptionPane.INFORMATION_MESSAGE);
             try {
               // Call rentDog function, which adds rented dog to Customer object and writes to
               // dog and customer text files
-              tempDog = Customer.rentDog(myCustomers, myDogs, email,
-                  tempDogs.elementAt(dogLst.getSelectedIndex()));
+              tempDog = Customer.rentDog(myCustomers, myDogs, email, tempDogs.elementAt(dogLst.getSelectedIndex()));
               // If rentDog was successful, will return not null dog
               if (tempDog != null) {
                 // Update arrays and tempDogs list and clear dogLst selection
                 update();
                 dogLst.clearSelection();
-                JOptionPane.showMessageDialog(mainJFrame,
-                    (tempDog.getName() + " was successfully rented!"),
-                    "Success!", JOptionPane.INFORMATION_MESSAGE);
+                JOptionPane.showMessageDialog(mainJFrame, (tempDog.getName() + " was successfully rented!"), "Success!",
+                    JOptionPane.INFORMATION_MESSAGE);
                 // Show error message if email entered already has a dog rented
               } else {
-                JOptionPane.showMessageDialog(mainJFrame,
-                    ("You already have a dog rented!"),
-                    "Error", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(mainJFrame, ("You already have a dog rented!"), "Error",
+                    JOptionPane.ERROR_MESSAGE);
               }
             } catch (IOException a) {
-              JOptionPane.showMessageDialog(mainJFrame,
-                  "Somethings broken",
-                  "Error",
-                  JOptionPane.ERROR_MESSAGE);
+              JOptionPane.showMessageDialog(mainJFrame, "Somethings broken", "Error", JOptionPane.ERROR_MESSAGE);
             }
             // Show error message if selected dog is already rented
           } else {
-            JOptionPane.showMessageDialog(mainJFrame,
-                (nameFld.getText() + " is already rented!"),
-                "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(mainJFrame, (nameFld.getText() + " is already rented!"), "Error",
+                JOptionPane.ERROR_MESSAGE);
           }
           // Show error message if no dog was selected from dogLst
         } else {
-          JOptionPane.showMessageDialog(mainJFrame,
-              "Please select a dog from the list to rent!",
-              "Error",
+          JOptionPane.showMessageDialog(mainJFrame, "Please select a dog from the list to rent!", "Error",
               JOptionPane.ERROR_MESSAGE);
         }
       }
@@ -319,39 +320,34 @@ public class MainController {
       @Override
       public void actionPerformed(ActionEvent e) {
         // Prompt user to enter email address and store in string
-        String email = JOptionPane.showInputDialog(mainJFrame,
-            "Please enter your email address", "Return a dog",
+        String email = JOptionPane.showInputDialog(mainJFrame, "Please enter your email address", "Return a dog",
             JOptionPane.INFORMATION_MESSAGE);
 
         try {
-          // if customer currently has a dog rented, flag will be set to true, else flag is false
+          // if customer currently has a dog rented, flag will be set to true, else flag
+          // is false
           flag = Customer.returnDog(myCustomers, myDogs, email);
           if (flag) {
             // If returnDog was successful, update arrays and tempDogs list and
             // clear dogLst selection
             update();
             dogLst.clearSelection();
-            JOptionPane.showMessageDialog(mainJFrame,
-                ("Return successful!"),
-                "Success!", JOptionPane.INFORMATION_MESSAGE);
-            // Show error if user tries to return dog when they don't have one currently rented
+            JOptionPane.showMessageDialog(mainJFrame, ("Return successful!"), "Success!",
+                JOptionPane.INFORMATION_MESSAGE);
+            // Show error if user tries to return dog when they don't have one currently
+            // rented
           } else {
-            JOptionPane.showMessageDialog(mainJFrame,
-                "You don't have any dogs rented!",
-                "You fucked up",
+            JOptionPane.showMessageDialog(mainJFrame, "You don't have any dogs rented!", "You fucked up",
                 JOptionPane.ERROR_MESSAGE);
           }
         } catch (IOException a) {
-          JOptionPane.showMessageDialog(mainJFrame,
-              "Somethings broken",
-              "Error",
-              JOptionPane.ERROR_MESSAGE);
+          JOptionPane.showMessageDialog(mainJFrame, "Somethings broken", "Error", JOptionPane.ERROR_MESSAGE);
         }
       }
     });
     mainJFrame.add(returnBtn);
 
-    //Initialize text boxes and set layouts
+    // Initialize text boxes and set layouts
     idFld = new JTextField();
     idFld.setBounds(380, 69, 200, 20);
     idFld.setEditable(false);
@@ -367,7 +363,7 @@ public class MainController {
     breedFld.setEditable(false);
     mainJFrame.add(breedFld);
 
-    String[] sexOptions = {"", "M", "F"};
+    String[] sexOptions = { "", "M", "F" };
     sexComboBox = new JComboBox<>(sexOptions);
     sexComboBox.setBounds(380, 264, 200, 20);
     sexComboBox.setEnabled(false);
@@ -417,7 +413,8 @@ public class MainController {
     rentedLbl.setBounds(388, 439, 60, 20);
     mainJFrame.add(rentedLbl);
 
-    // Finally set MainJFrame size, default close (when x button is clicked), set layout to null
+    // Finally set MainJFrame size, default close (when x button is clicked), set
+    // layout to null
     // and make it visible
     mainJFrame.setSize(860, 550);
     mainJFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -436,7 +433,8 @@ public class MainController {
     rentedFld.setText("");
   }
 
-  // Helper function to update all arrays/lists, pulls info from text files, then add non deleted
+  // Helper function to update all arrays/lists, pulls info from text files, then
+  // add non deleted
   // dogs to tempDogs list from myDogs array
   private void update() throws IOException {
     myDogs = DogFile.getAllDogs();

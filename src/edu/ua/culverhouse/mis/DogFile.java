@@ -19,11 +19,11 @@ public class DogFile {
       myDogs[Dog.getCount()] =
           new Dog(Integer.parseInt(tempArray[0]), tempArray[1],
               tempArray[2], tempArray[3],
-              Integer.parseInt(tempArray[4]), Float.parseFloat(tempArray[5]));
-      if (tempArray[6].equals("true")) {
+              Integer.parseInt(tempArray[4]), Float.parseFloat(tempArray[5]), tempArray[6]);
+      if (tempArray[7].equals("true")) {
         myDogs[Dog.getCount()].setRented();
       }
-      if (tempArray[7].equals("true")) {
+      if (tempArray[8].equals("true")) {
         myDogs[Dog.getCount()].setDeleted();
       }
 

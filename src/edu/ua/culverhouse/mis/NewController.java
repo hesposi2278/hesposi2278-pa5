@@ -19,8 +19,8 @@ public class NewController {
 
   // Separate JPanels for edit and new functions
   private JPanel newJPanel, editJPanel;
-  private JTextField newNameFld, newBreedFld, newAgeFld, newWeightFld;
-  private JTextField editIdFld, editNameFld, editBreedFld, editAgeFld, editWeightFld;
+  private JTextField newNameFld, newBreedFld, newAgeFld, newWeightFld, newImgFld;
+  private JTextField editIdFld, editNameFld, editBreedFld, editAgeFld, editWeightFld, editImgFld;
   private JComboBox<String> newSexComboBox, editSexComboBox;
 
   public NewController() {
@@ -41,7 +41,7 @@ public class NewController {
         // return to MainController
         tempDog = new Dog(0, newNameFld.getText(), newBreedFld.getText(),
             newSexComboBox.getItemAt(newSexComboBox.getSelectedIndex()),
-            Integer.parseInt(newAgeFld.getText()), Float.parseFloat(newWeightFld.getText()));
+            Integer.parseInt(newAgeFld.getText()), Float.parseFloat(newWeightFld.getText()), newImgFld.getText());
         return tempDog;
         // If text fields were not displayed properly, errorCheck function will display error
         // message, then redisplay newJPanel
@@ -55,11 +55,11 @@ public class NewController {
   // Used if EDIT button was clicked from homepage, pass in text field values from selected dog
   // in dogLst
   public Dog createAndDisplayEditGUI(String id, String name, String breed, int sexIndex,
-      String age, String weight) {
+      String age, String weight, String imgPath) {
     Dog tempDog = new Dog();
     // Create editJPanel, set layout
     int selection = JOptionPane.showConfirmDialog(null,
-        getEditPanel(id, name, breed, sexIndex, age, weight), "Edit Dog",
+        getEditPanel(id, name, breed, sexIndex, age, weight, imgPath), "Edit Dog",
         JOptionPane.OK_CANCEL_OPTION);
     // If okay button is pressed, check text fields for errors
     if (selection == JOptionPane.OK_OPTION) {
@@ -68,10 +68,10 @@ public class NewController {
         tempDog = new Dog(Integer.parseInt(editIdFld.getText()), editNameFld.getText(),
             editBreedFld.getText(),
             editSexComboBox.getItemAt(editSexComboBox.getSelectedIndex()),
-            Integer.parseInt(editAgeFld.getText()), Float.parseFloat(editWeightFld.getText()));
+            Integer.parseInt(editAgeFld.getText()), Float.parseFloat(editWeightFld.getText()), editImgFld.getText());
         return tempDog;
       } else {
-        createAndDisplayEditGUI(id, name, breed, sexIndex, age, weight);
+        createAndDisplayEditGUI(id, name, breed, sexIndex, age, weight, imgPath);
       }
     }
     return tempDog;
@@ -88,6 +88,7 @@ public class NewController {
     newWeightFld = new JTextField("");
     String[] sexOptions = {" ", "M", "F"};
     newSexComboBox = new JComboBox<>(sexOptions);
+    newImgFld = new JTextField("");
 
     newJPanel.add(new JLabel("Name"));
     newJPanel.add(newNameFld);
@@ -104,6 +105,9 @@ public class NewController {
     newJPanel.add(new JLabel("Weight"));
     newJPanel.add(newWeightFld);
 
+    newJPanel.add(new JLabel("Image URL"));
+    newJPanel.add(newImgFld);
+
     newJPanel.setSize(new Dimension(350, 10));
     newJPanel.setPreferredSize(new Dimension(350, newJPanel.getPreferredSize().height));
 
@@ -112,7 +116,7 @@ public class NewController {
 
   // Create and set layout for editJOptionPane
   private JPanel getEditPanel(String id, String name, String breed, int sexIndex, String age,
-      String weight) {
+      String weight, String imgPath) {
     editJPanel = new JPanel();
     editJPanel.setLayout(new GridLayout(0, 2, 2, 2));
 
@@ -124,6 +128,7 @@ public class NewController {
     String[] sexOptions = {" ", "M", "F"};
     editSexComboBox = new JComboBox<>(sexOptions);
     editSexComboBox.setSelectedIndex(sexIndex);
+    editImgFld = new JTextField(imgPath);
 
     editJPanel.add(new JLabel("ID"));
     editJPanel.add(editIdFld);
@@ -142,6 +147,9 @@ public class NewController {
 
     editJPanel.add(new JLabel("Weight"));
     editJPanel.add(editWeightFld);
+
+    editJPanel.add(new JLabel("Image URL"));
+    editJPanel.add(editImgFld);
 
     editJPanel.setSize(new Dimension(350, 10));
     editJPanel.setPreferredSize(new Dimension(350, editJPanel.getPreferredSize().height));
@@ -187,6 +195,13 @@ public class NewController {
       JOptionPane.showMessageDialog(new JFrame(),
           "Please enter a valid weight!",
           "Invalid weight",
+          JOptionPane.ERROR_MESSAGE);
+      return false;
+    }
+    if (newImgFld.getText().equals("")) {
+      JOptionPane.showMessageDialog(new JFrame(),
+          "Please enter a valid Image URL!",
+          "Invalid url",
           JOptionPane.ERROR_MESSAGE);
       return false;
     }
@@ -240,6 +255,13 @@ public class NewController {
       JOptionPane.showMessageDialog(new JFrame(),
           "Please enter a valid weight!",
           "Invalid weight",
+          JOptionPane.ERROR_MESSAGE);
+      return false;
+    }
+    if (editImgFld.getText().equals("")) {
+      JOptionPane.showMessageDialog(new JFrame(),
+          "Please enter a valid Image URL!",
+          "Invalid url",
           JOptionPane.ERROR_MESSAGE);
       return false;
     }
